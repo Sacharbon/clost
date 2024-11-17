@@ -1,7 +1,13 @@
 # Get started
 ## Clone the repo
-```git clone https://github.com/Sacharbon/foundry-cast && cd foundry-cast```
+```
+git clone https://github.com/Sacharbon/foundry-cast && cd foundry-cast
+```
 ## Build the program
-```Cargo build && cd ./target/release```
+```
+Cargo build && cd ./target/release
+```
 ## Use it !
-```./cast```
+```
+./cast
+```
