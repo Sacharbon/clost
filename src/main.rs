@@ -1,5 +1,5 @@
 use clap::Parser;
-use commands::{balance::eth_getBalance, Commands};
+use commands::{balance::eth_getBalance, call::eth_call, send::eth_send, Commands};
 
 pub mod commands;
 
@@ -22,5 +22,7 @@ async fn main() {
 
     let _ = match &cli.commands {
         Commands::Balance(args) => eth_getBalance(args).await,
+        Commands::Call(args) => eth_call(args).await,
+        Commands::Send(args) => eth_send(args).await,
     };
 }
