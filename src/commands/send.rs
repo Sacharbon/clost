@@ -1,6 +1,6 @@
 use alloy::{
     network::{TransactionBuilder, EthereumWallet},
-    primitives::{keccak256, Address, Bytes},
+    primitives::{keccak256, Address, Bytes, U256},
     providers::{Provider, ProviderBuilder},
     rpc::types::TransactionRequest,
     signers::local::PrivateKeySigner,
@@ -14,6 +14,8 @@ pub struct SendArgs {
     to: Address,
     /// The signature of the function to call
     sig: String,
+    /// Params for the function called
+    params: String,
     /// The private key of the account executing the transaction
     private_key: PrivateKeySigner,
 }
@@ -27,11 +29,18 @@ pub async fn eth_send(args: &SendArgs) -> Result<()> {
         .await?;
     let function_selector = Bytes::from(keccak256(args.sig.as_bytes())[..4].to_vec());
 
+    let mut input = function_selector.to_vec();
+
+    let number = U256::from(args.params.parse::<i32>().unwrap());
+    let number_bytes = number.to_be_bytes_vec();
+    input.extend_from_slice(&number_bytes);
+
     let tx = TransactionRequest::default()
         .with_to(args.to)
-        .with_input(function_selector);
+        .with_input(Bytes::from(input));
+
     let result = provider.send_transaction(tx).await?;
-    println!("foo {}", result.tx_hash());
+    println!("{}", result.tx_hash());
     Ok(())
 }
 
