@@ -31,7 +31,12 @@ pub async fn eth_send(args: &SendArgs) -> Result<()> {
 
     let mut input = function_selector.to_vec();
 
-    let number = U256::from(args.params.parse::<i32>().unwrap());
+    let params_raw = match args.params.parse::<i32>() {
+        Ok(value) => value,
+        Err(_) => return Err("Failed to parse params") 
+    };
+
+    let number = U256::from(params_raw);
     let number_bytes = number.to_be_bytes_vec();
     input.extend_from_slice(&number_bytes);
 
